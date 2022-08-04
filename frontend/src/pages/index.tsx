@@ -28,18 +28,59 @@ const Home = () => {
     if (!todoList) return;
     await todoList.methods.completeTask(id).send({ from: account });
     setLoading(true);
-  }
 
+
+  }
+  function convertToHex(str: string) {
+    var hex = "";
+    for (var i = 0; i < str.length; i++) {
+      hex += "" + str.charCodeAt(i).toString(16);
+    }
+    return hex;
+  }
+  async function sendTx() {
+    if (!todoList) return;
+    const tx = {
+      // this could be provider.addresses[0] if it exists
+      from: "0x4d9d313fabe4fc3051c276e8c7e3663ef5a85513",
+      // target address, this could be a smart contract address
+      to: "0xd9fded60cd81d33f05148a3b11bfcecfa5bdf619",
+      // optional if you want to specify the gas limit
+      gas: 80000,
+      // optional if you are invoking say a payable function
+      // value: 0,
+      // this encodes the ABI of the method and the arguements
+      data: convertToHex("Hello wordk"),
+    };
+    const web3 = await getWeb3();
+    const signPromise = await web3.eth.accounts.signTransaction(
+      tx,
+      "e2db7f744b597e76fd2dcaa1fe9946f7fa3a8b86248a8c669af477dbc67aef01"
+    );
+    console.log({ signPromise });
+    const sentTx = web3.eth.sendSignedTransaction(
+      signPromise.raw || signPromise.rawTransaction
+    );
+    sentTx.on("receipt", (receipt) => {
+      // do something when receipt comes back
+      console.log("receipt :>> ", receipt);
+    });
+    sentTx.on("error", (err) => {
+      // do something on transaction error
+      console.log("err", err);
+    });
+
+  }
   useEffect(() => {
     if (!todoList) return;
     if (!loading) return;
+   
     const getTasks = async () => {
       const taskCount = await todoList.methods.taskCount().call();
       console.log("taskCount", taskCount);
       const promises = [];
       for (let i = 1; i <= parseInt(taskCount); i++) {
         const task = todoList.methods.tasks(i).call();
-        // setTasks((prevTasks) => [...prevTasks, task]);
         promises.push(task);
       }
       Promise.all(promises).then((tasks) => {
@@ -54,6 +95,17 @@ const Home = () => {
     const connect = async () => {
       const web3 = await getWeb3();
       const accounts = await web3.eth.getAccounts();
+
+      // let subscription = web3.eth.subscribe("logs", {}, (err, event) => {
+      //   if (!err) console.log(event);
+      // });
+
+      // subscription.on("data", (event) => console.log(event));
+      // subscription.on("changed", (changed) => console.log(changed));
+      // subscription.on("error", (err) =>
+      //   console.log("error", err.message, err.stack)
+      // );
+      // subscription.on("connected", (nr) => console.log(nr));
       if (accounts.length > 0) {
         const account = accounts[0];
         console.log(account);
@@ -64,7 +116,7 @@ const Home = () => {
       setTodoList(
         new web3.eth.Contract(
           TODO_LIST_ABI.abi as AbiItem[],
-          "0x8c4DA3ad53ec09dd3B96A5abF704c9A852B888E0"
+          "0xcF5b213B9AefF188690804Bd6F099EFCA2900D83"
         )
       );
     };
@@ -72,6 +124,9 @@ const Home = () => {
   }, []);
   return (
     <div className={`max-w-xl mx-auto ${loading ? "animate-pulse" : ""}`}>
+      <button className="btn" onClick={sendTx}>
+        Send TX
+      </button>
       <div className="mb-4">
         <h1 className="text-xl font-bold text-center">Todo</h1>
         <h2 className="text-center text-md ">{account}</h2>
@@ -109,6 +164,7 @@ const Home = () => {
                   className="checkbox checkbox-secondary"
                   disabled={task?.completed}
                 />
+
                 {/* <button className="">remove</button> */}
               </div>
             </label>

@@ -10,6 +10,7 @@ contract TodoList {
     }
 
     mapping(uint256 => Task) public tasks;
+    event TaskAdded(uint256 id, string content);
 
     constructor() {
         createTask("Learn smartcontract");
@@ -18,8 +19,8 @@ contract TodoList {
     // function for create task
     function createTask(string memory _content) public {
         taskCount++;
-
         tasks[taskCount] = Task(taskCount, _content, false);
+        emit TaskAdded(taskCount, _content);
     }
 
     function getTask(uint256 _id) public view returns (Task memory) {
