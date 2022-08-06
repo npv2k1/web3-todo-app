@@ -1,0 +1,29 @@
+{
+  "name": "vcheck",
+  "version": "1.0.0",
+  "description": "vcheck",
+  "scripts": {
+    "build:api": "cd api && npm install --legacy-peer-deps --save && npm run build",
+    "build:web": "cd frontend && yarn install && yarn export",
+    "build": "npm run build:api && npm run build:web",
+    "start": "npm run build && node api/index.js",
+    "start:api": "node api/index.js",
+    "start:web": "cd web && npm run start",
+    "ci": "npm run build && npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vdtsol/vCheck.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vdtsol/vCheck/issues"
+  },
+  "homepage": "https://github.com/vdtsol/vCheck#readme",
+  "dependencies": {
+    "formik": "^2.2.9",
+    "yup": "^0.32.11"
+  }
+}

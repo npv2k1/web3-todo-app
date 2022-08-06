@@ -1,5 +1,7 @@
 /* eslint-disable no-console */
+
 import Web3 from "web3";
+declare var window: any
 
 const getWeb3 = async () => {
   // Wait for loading completion to avoid race conditions with web3 injection timing.

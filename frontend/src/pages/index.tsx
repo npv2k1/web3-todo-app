@@ -61,11 +61,11 @@ const Home = () => {
     const sentTx = web3.eth.sendSignedTransaction(
       signPromise.raw || signPromise.rawTransaction
     );
-    sentTx.on("receipt", (receipt) => {
+    sentTx.on("receipt", (receipt: string) => {
       // do something when receipt comes back
       console.log("receipt :>> ", receipt);
     });
-    sentTx.on("error", (err) => {
+    sentTx.on("error", (err: string) => {
       // do something on transaction error
       console.log("err", err);
     });
@@ -124,9 +124,9 @@ const Home = () => {
   }, []);
   return (
     <div className={`max-w-xl mx-auto ${loading ? "animate-pulse" : ""}`}>
-      <button className="btn" onClick={sendTx}>
+      {/* <button className="btn" onClick={sendTx}>
         Send TX
-      </button>
+      </button> */}
       <div className="mb-4">
         <h1 className="text-xl font-bold text-center">Todo</h1>
         <h2 className="text-center text-md ">{account}</h2>
