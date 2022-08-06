@@ -41,8 +41,8 @@ jobs:
         run: cd contract && yarn install     
 
       - name: Web package
-        run: cd web && yarn install    
-        
+        run: cd frontend && yarn install    
+
       - name: Build web
         run: npm run build:web       
       
